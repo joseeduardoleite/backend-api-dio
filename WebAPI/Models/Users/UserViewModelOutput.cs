@@ -1,8 +1,8 @@
-namespace WebAPI.Models.User
+namespace WebAPI.Models.Users
 {
     public class UserViewModelOutput
     {
-        public int Id { get; set; }
+        public int Code { get; set; }
         public string Login { get; set; }
         public string Email { get; set; }
     }

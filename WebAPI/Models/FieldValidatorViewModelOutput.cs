@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace WebAPI
+namespace WebAPI.Models
 {
     public class FieldValidatorViewModelOutput
     {

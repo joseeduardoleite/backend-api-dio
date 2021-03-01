@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using WebAPI.Models;
 
-namespace WebAPI.Filter
+namespace WebApi.Filter
 {
     public class CustomValidatorModelState : ActionFilterAttribute
     {

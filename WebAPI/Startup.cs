@@ -1,12 +1,17 @@
 using System.Text;
+using Business.Services;
+using Infra.Data;
+using Infra.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using WebAPI.Services;
 
 namespace WebAPI
 {
@@ -22,11 +27,15 @@ namespace WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers().ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
 
-            services.AddControllers().ConfigureApiBehaviorOptions(options => 
-            {
-                options.SuppressModelStateInvalidFilter = true;
-            });
+            var connectionString = Configuration["ConnectionStrings:DefaultConnection"];
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICourseRepository, CourseRepository>();
+            services.AddScoped<IAuthenticationService, JwtService>();
 
             var secret = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtConfigurations:Secret").Value);
 
@@ -50,10 +59,10 @@ namespace WebAPI
 
             services.AddSwaggerGen(x => 
             {
-                x.SwaggerDoc("v1", new OpenApiInfo { Title = "Desafio API", Version = "v1" });
+                x.SwaggerDoc("v1", new OpenApiInfo { Title = "API Digital Innovation One", Version = "v1" });
 
                 x.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme() {  
-                    Name = "Authorization",  
+                    Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,  
                     Scheme = "Bearer",  
                     BearerFormat = "JWT",  
